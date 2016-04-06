@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Discord;
 using DiscordSharp;
+using System.Threading;
 
 namespace DiscordBot
 {
@@ -12,8 +13,8 @@ namespace DiscordBot
     {
         static void Main(string[] args)
         {
-            String email = "";
-            String passw = "";
+            String email = "enchoibots@gmail.com";
+            String passw = "nickchoi1";
 
             /*
             //user input
@@ -29,32 +30,32 @@ namespace DiscordBot
             client.ClientPrivateInformation.Password = passw;
 
             //interactions
-  
-            //connect
-            try
-            {
-                client.SendLoginRequest();
-                client.Connect();
-            }
-            catch(Exception e)
-            {
-                Console.WriteLine(e);
-            }
-
-            client.Connected += (sender, e) =>
-            {
-                Console.WriteLine("Connected User: " + e.user.Username);
-                client.UpdateCurrentGame("Big Brother");
-            };
             client.MessageReceived += (sender, e) => // Channel message has been received
             {
-                if (e.message_text == "help")
+                if (e.message.Content == "help")
                 {
+                    Console.WriteLine("help detected");
                     e.Channel.SendMessage("This is a public message!");
                     // Because this is a public message, 
                     // the bot should send a message to the channel the message was received.
                 }
+                Console.WriteLine(e.message.Content);
             };
+
+
+            //connect
+            try
+            {
+                client.SendLoginRequest();
+                Thread t = new Thread(client.Connect);
+                t.Start();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+
+            
 
 
 
