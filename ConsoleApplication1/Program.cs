@@ -16,8 +16,7 @@ namespace ConsoleApplication1
         static void Main(string[] args)
         {
             var client = new DiscordClient().UsingAudio(x => x.Bitrate = AudioServiceConfig.MaxBitrate);
-           
-
+            
             //Display all log messages in the console
             client.Log.Message += (s, e) => Console.WriteLine($"[{e.Severity}] {e.Source}: {e.Message}");
 
@@ -27,7 +26,14 @@ namespace ConsoleApplication1
                 if (!e.Message.IsAuthor)
                     await e.Channel.SendMessage(e.Message.Text);
                 if (e.Message.Text == "!test")
-                    await e.Channel.JoinAudio();
+                    if (e.User.VoiceChannel != null)
+                    {
+                        await e.User.VoiceChannel.JoinAudio();
+                        //do sound
+
+                        await Task.Delay(1000);
+                        await e.User.VoiceChannel.LeaveAudio();
+                    }
             };
 
 
@@ -37,8 +43,6 @@ namespace ConsoleApplication1
             {
                 //Connect to the Discord server using our email and password
                 await client.Connect("enchoibots@gmail.com", "nickchoi1");
-
-
             });
            
             
